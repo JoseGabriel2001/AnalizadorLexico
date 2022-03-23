@@ -1,0 +1,63 @@
+package codigo;
+import static codigo.Tokens.*;
+%%
+%class Lexer
+%type Tokens
+L=[a-zA-Z_]+
+De= \[ | \] | \{ | \} | \( | \) | \;
+D=[0-9]+
+espacio=[ ,\t,\r,\n]+
+cad = \"((\?:[^\"\\]|\\.)*)\"
+
+%{
+    public String lexeme;
+%}
+%%
+
+var |
+if |
+else |
+true |
+false |
+while |
+main |
+output |
+for {lexeme=yytext(); return Reservadas;}
+
+{espacio} {/*Ignore*/}
+
+"//".* {/*Ignore*/}
+
+"=" {return Igual;}
+
+"+" {return Suma;}
+
+"-" {return Resta;}
+
+"*" {return Multiplicacion;}
+
+"/" {return Division;}
+
+{L}({L}|{D})* {lexeme=yytext(); return Identificador;}
+
+("(-"{D}+")")|{D}+ {lexeme=yytext(); return Numero;}
+
+{cad} {lexeme=yytext(); return Cadena;}
+
+"==" {return Comparacion;}
+
+">=" {return Mayor_o_igual_que;}
+
+"<=" {return Menor_o_igual_que;}
+
+">" {return Mayor_que;}
+
+"<" {return Menor_que;}
+
+{De} {lexeme =yytext(); return Delimitador;}
+
+. {return ERROR;}
+
+
+
+
